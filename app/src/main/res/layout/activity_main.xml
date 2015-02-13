@@ -12,12 +12,12 @@
         android:weightSum="3">
 
         <TextView
-            android:id="@+id/txtStack"
+            android:id="@+id/screen"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:textSize="25sp"
             android:gravity="right"
-            android:layout_weight="3"/>
+            android:layout_weight="3" />
 
         <GridLayout
             android:layout_width="wrap_content"
