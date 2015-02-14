@@ -1,7 +1,9 @@
 package com.example.carita.plumcalculator;
 
+import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -181,7 +183,8 @@ public class MainActivity extends ActionBarActivity {
                         number = calculate(number, Integer.parseInt(stack.toString()), operator);
                         answer = number;
                         screen.append(" ");
-                        screen.append(String.valueOf(answer));
+                        String output = "<font color ='#0020C2'>" + String.valueOf(answer) + "</font>";
+                        screen.append(Html.fromHtml(output));
                         screen.append(" ");
                     }
                     operator = "+";
@@ -211,7 +214,8 @@ public class MainActivity extends ActionBarActivity {
                         number = calculate(number, Integer.parseInt(stack.toString()), operator);
                         answer = number;
                         screen.append(" ");
-                        screen.append(String.valueOf(answer));
+                        String output = "<font color ='#0020C2'>" + String.valueOf(answer) + "</font>";
+                        screen.append(Html.fromHtml(output));
                         screen.append(" ");
                     }
                     operator = "-";
@@ -227,16 +231,27 @@ public class MainActivity extends ActionBarActivity {
         equal.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (number != 0 && operator.length() != 0 && stack.length() != 0) {
-                    number = calculate(number, Integer.parseInt(stack.toString()), operator);
-                    answer = number;
-                    stack = new StringBuilder();
-                    operator = "";
-                }
-                if(answer != MAX7DIGIT) {
-                    screen.append(" ");
-                    screen.append(String.valueOf(answer));
-                    solved = true;
+                if (!solved) {
+                    if (number != 0 && operator.length() != 0 && stack.length() != 0) { // 1 + 1 =
+                        number = calculate(number, Integer.parseInt(stack.toString()), operator);
+                        answer = number;
+                        stack = new StringBuilder();
+                        operator = "";
+                    }
+                    else if (number != 0 && operator.length() != 0) { //1 + =
+                        answer = number;
+                        operator = "";
+                    }
+                    else if (number == 0 && operator.length() == 0 && stack.length() != 0){ //1 =
+                        answer = Integer.parseInt(stack.toString());
+                        stack = new StringBuilder();
+                    }
+                    if(answer != MAX7DIGIT) {
+                        screen.append(" ");
+                        String output = "<font color ='#0020C2'>" + String.valueOf(answer) + "</font>";
+                        screen.append(Html.fromHtml(output));
+                        solved = true;
+                    }
                 }
             }
         });
