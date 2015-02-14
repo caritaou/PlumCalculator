@@ -15,11 +15,13 @@ public class MainActivity extends ActionBarActivity {
 
     TextView screen;
     Button one, two, three, four, five, six, seven, eight, nine, zero;
-    Button clear, plus, minus, evaluate;
+    Button clear, plus, minus, equal;
 
-    String stack = "";
+    StringBuilder stack = new StringBuilder("");
     String operator = "";
+    int number = 0;
     int answer = MAX7DIGIT;
+    boolean solved = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,10 @@ public class MainActivity extends ActionBarActivity {
         one.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (solved) {
+                    reset();
+                }
+                stack.append("1");
                 screen.append("1");
             }
         });
@@ -43,6 +49,10 @@ public class MainActivity extends ActionBarActivity {
         two.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (solved) {
+                    reset();
+                }
+                stack.append("2");
                 screen.append("2");
             }
         });
@@ -51,6 +61,10 @@ public class MainActivity extends ActionBarActivity {
         three.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (solved) {
+                    reset();
+                }
+                stack.append("3");
                 screen.append("3");
             }
         });
@@ -59,6 +73,10 @@ public class MainActivity extends ActionBarActivity {
         four.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (solved) {
+                    reset();
+                }
+                stack.append("4");
                 screen.append("4");
             }
         });
@@ -67,6 +85,10 @@ public class MainActivity extends ActionBarActivity {
         five.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (solved) {
+                    reset();
+                }
+                stack.append("5");
                 screen.append("5");
             }
         });
@@ -75,6 +97,10 @@ public class MainActivity extends ActionBarActivity {
         six.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (solved) {
+                    reset();
+                }
+                stack.append("6");
                 screen.append("6");
             }
         });
@@ -83,6 +109,10 @@ public class MainActivity extends ActionBarActivity {
         seven.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (solved) {
+                    reset();
+                }
+                stack.append("7");
                 screen.append("7");
             }
         });
@@ -91,6 +121,10 @@ public class MainActivity extends ActionBarActivity {
         eight.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (solved) {
+                    reset();
+                }
+                stack.append("8");
                 screen.append("8");
             }
         });
@@ -99,6 +133,10 @@ public class MainActivity extends ActionBarActivity {
         nine.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (solved) {
+                    reset();
+                }
+                stack.append("9");
                 screen.append("9");
             }
         });
@@ -107,7 +145,13 @@ public class MainActivity extends ActionBarActivity {
         zero.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                screen.append("0");
+                if (solved) {
+                    reset();
+                }
+                if (stack.length() != 0){
+                    stack.append("0");
+                    screen.append("0");
+                }
             }
         });
 
@@ -115,7 +159,7 @@ public class MainActivity extends ActionBarActivity {
         clear.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                screen.setText("");
+                reset();
             }
         });
 
@@ -123,7 +167,29 @@ public class MainActivity extends ActionBarActivity {
         plus.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                screen.append(" ");
+                if (solved && stack.length() == 0){
+                    solved = false;
+                    screen.append(" ");
+                }
+
+                if (stack.length() != 0){
+                    if (operator.length() == 0){
+                        screen.append(" ");
+                        number = Integer.parseInt(stack.toString());
+                    }
+                    if (operator.length() != 0) {
+                        number = calculate(number, Integer.parseInt(stack.toString()), operator);
+                        answer = number;
+                        screen.append(" ");
+                        screen.append(String.valueOf(answer));
+                        screen.append(" ");
+                    }
+                    operator = "+";
+                    stack = new StringBuilder();
+                }
+                else {
+                    operator = "+";
+                }
             }
         });
 
@@ -131,20 +197,83 @@ public class MainActivity extends ActionBarActivity {
         minus.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                screen.append(" ");
-            }
-        });
-
-        evaluate = (Button) findViewById(R.id.equal);
-        evaluate.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(answer != MAX7DIGIT) {
+                if (solved && stack.length() == 0){
+                    solved = false;
                     screen.append(" ");
-                    screen.append(String.valueOf(answer));
+                }
+
+                if (stack.length() != 0){
+                    if (operator.length() == 0){
+                        screen.append(" ");
+                        number = Integer.parseInt(stack.toString());
+                    }
+                    if (operator.length() != 0) {
+                        number = calculate(number, Integer.parseInt(stack.toString()), operator);
+                        answer = number;
+                        screen.append(" ");
+                        screen.append(String.valueOf(answer));
+                        screen.append(" ");
+                    }
+                    operator = "-";
+                    stack = new StringBuilder();
+                }
+                else {
+                    operator = "-";
                 }
             }
         });
+
+        equal = (Button) findViewById(R.id.equal);
+        equal.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (number != 0 && operator.length() != 0 && stack.length() != 0) {
+                    number = calculate(number, Integer.parseInt(stack.toString()), operator);
+                    answer = number;
+                    stack = new StringBuilder();
+                    operator = "";
+                }
+                if(answer != MAX7DIGIT) {
+                    screen.append(" ");
+                    screen.append(String.valueOf(answer));
+                    solved = true;
+                }
+            }
+        });
+    }
+
+    /**
+     * Checks to see if user input more than 7 digits
+     */
+    public void validateStack(String s) {
+        if (s.length() > 7){
+
+        }
+    }
+
+    public int calculate(int a, int b, String op) {
+        int eval = 0;
+        switch (op){
+            case "+":
+                eval = a + b;
+                break;
+            case "-":
+                eval = a - b;
+                break;
+        }
+        return eval;
+    }
+
+    /**
+     * Resets all values for next equation
+     */
+    public void reset() {
+        screen.setText("");
+        stack = new StringBuilder("");
+        operator = "";
+        number = 0;
+        answer = MAX7DIGIT;
+        solved = false;
     }
 
     @Override
