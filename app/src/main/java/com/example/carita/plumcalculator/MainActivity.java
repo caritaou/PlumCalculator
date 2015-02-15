@@ -243,7 +243,8 @@ public class MainActivity extends ActionBarActivity {
                         operator = "";
                     }
                     else if (number == 0 && operator.length() == 0 && stack.length() != 0){ //1 =
-                        answer = Integer.parseInt(stack.toString());
+                        number = Integer.parseInt(stack.toString());
+                        answer = number;
                         stack = new StringBuilder();
                     }
                     if(answer != MAX7DIGIT) {
