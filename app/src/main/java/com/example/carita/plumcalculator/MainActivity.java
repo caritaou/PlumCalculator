@@ -19,11 +19,11 @@ public class MainActivity extends ActionBarActivity {
     Button one, two, three, four, five, six, seven, eight, nine, zero;
     Button clear, plus, minus, equal;
 
-    StringBuilder stack = new StringBuilder("");
-    String operator = "";
-    int number = 0;
-    int answer = MAX7DIGIT;
-    boolean solved = false;
+    StringBuilder stack = new StringBuilder("");    //holds current number entered
+    String operator = "";   //current operator
+    int number = 0;         //left number in the equation
+    int answer = MAX7DIGIT; //answer to the equation
+    boolean solved = false; //state of equation
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +34,15 @@ public class MainActivity extends ActionBarActivity {
         addButtons();
     }
 
+    /**
+     * Button listeners for the keypad
+     */
     public void addButtons() {
         one = (Button) findViewById(R.id.one);
         one.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (solved) {
+                if (solved) { //if user hit "=" and then a number, continue the equation
                     reset();
                 }
                 stack.append("1");
@@ -150,6 +153,7 @@ public class MainActivity extends ActionBarActivity {
                 if (solved) {
                     reset();
                 }
+                //if leading zero, do nothing. else append to stack
                 if (stack.length() != 0){
                     stack.append("0");
                     screen.append("0");
@@ -169,16 +173,20 @@ public class MainActivity extends ActionBarActivity {
         plus.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                //if user hit "+" after "="
                 if (solved && stack.length() == 0){
                     solved = false;
                     screen.append(" ");
                 }
 
+                //if user hit "+" after entering a number
                 if (stack.length() != 0){
+                    //if there are no previous record of an operator, record the first number
                     if (operator.length() == 0){
                         screen.append(" ");
                         number = Integer.parseInt(stack.toString());
                     }
+                    //if there is already an operator, then perform calculation and display result
                     if (operator.length() != 0) {
                         number = calculate(number, Integer.parseInt(stack.toString()), operator);
                         answer = number;
@@ -187,11 +195,11 @@ public class MainActivity extends ActionBarActivity {
                         screen.append(Html.fromHtml(output));
                         screen.append(" ");
                     }
-                    operator = "+";
+                    operator = "+"; //set the current operator to "+"
                     stack = new StringBuilder();
                 }
                 else {
-                    operator = "+";
+                    operator = "+"; //set the current operator to "+"
                 }
             }
         });
@@ -200,16 +208,20 @@ public class MainActivity extends ActionBarActivity {
         minus.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                //if user hit "-" after "="
                 if (solved && stack.length() == 0){
                     solved = false;
                     screen.append(" ");
                 }
 
+                //if user hit "-" after entering a number
                 if (stack.length() != 0){
+                    //if there are no previous record of an operator, record the first number
                     if (operator.length() == 0){
                         screen.append(" ");
                         number = Integer.parseInt(stack.toString());
                     }
+                    //if there is already an operator, then perform calculation and display result
                     if (operator.length() != 0) {
                         number = calculate(number, Integer.parseInt(stack.toString()), operator);
                         answer = number;
@@ -218,11 +230,11 @@ public class MainActivity extends ActionBarActivity {
                         screen.append(Html.fromHtml(output));
                         screen.append(" ");
                     }
-                    operator = "-";
+                    operator = "-"; //set the current operator to "-"
                     stack = new StringBuilder();
                 }
                 else {
-                    operator = "-";
+                    operator = "-"; //set the current operator to "-"
                 }
             }
         });
@@ -232,21 +244,25 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 if (!solved) {
+                    //if user entered two numbers and an operator followed by equal
                     if (number != 0 && operator.length() != 0 && stack.length() != 0) { // 1 + 1 =
                         number = calculate(number, Integer.parseInt(stack.toString()), operator);
                         answer = number;
                         stack = new StringBuilder();
                         operator = "";
                     }
+                    //if user entered a number and a operator followed by equal
                     else if (number != 0 && operator.length() != 0) { //1 + =
                         answer = number;
                         operator = "";
                     }
+                    //if user entered a number followed by equal
                     else if (number == 0 && operator.length() == 0 && stack.length() != 0){ //1 =
                         number = Integer.parseInt(stack.toString());
                         answer = number;
                         stack = new StringBuilder();
                     }
+                    //if the answer is different than MAX7DIGIT, print to screen. else the user did not enter an equation
                     if(answer != MAX7DIGIT) {
                         screen.append(" ");
                         String output = "<font color ='#0020C2'>" + String.valueOf(answer) + "</font>";
@@ -259,14 +275,12 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /**
-     * Checks to see if user input more than 7 digits
+     * Performs addition or subtraction given two numbers and an operator
+     * @param a first number in equation
+     * @param b second number in equation
+     * @param op operator
+     * @return the sum or difference between a and b
      */
-    public void validateStack(String s) {
-        if (s.length() > 7){
-
-        }
-    }
-
     public int calculate(int a, int b, String op) {
         int eval = 0;
         switch (op){
